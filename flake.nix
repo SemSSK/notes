@@ -17,6 +17,7 @@
             typst
             typst-lsp
             typst-preview
+
           ];
         };
       };
