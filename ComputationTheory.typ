@@ -1,3 +1,5 @@
+#import "lib.typ": *
+
 #set page(
   margin: 1cm
 )
@@ -9,47 +11,6 @@
 #set heading(
   numbering: "1."
 )
-
-#let important_block(body,color,text_color) = {
-  set text(text_color)
-  rect(
-    fill:color,
-    radius:10%,
-    width:100%,
-    inset: 8pt + 4pt,
-    [#body]
-  )
-}
-
-#let definition_block(body) = {
-  important_block([#body],blue,white)
-} 
-
-#let theorem_block(body) = {
-  important_block([#body],red,white)
-}
-
-#let proof_block(body) = {
-  important_block([#body],green,black)
-}
-
-#let incomplete_proof_block(body) = {
-  important_block([#body],gray,black)
-}
-
-= Color code explained 
-#definition_block()[
-  Definition Block
-]
-#theorem_block()[
-  Theorem Block
-]
-#proof_block()[
-  Proof Block
-]
-#incomplete_proof_block()[
-  Proof that cannot be completed without more info so it is incomplete
-]
 
 = Automata and Language
 
@@ -180,12 +141,12 @@
 
 
 #theorem_block()[
-  ==== Theorem Closure under union using NFA
+  === Theorem Closure under union using NFA
   $A$ and $B$ are regular languages then $A union B$ is a regular language
 ]
 
 #proof_block()[
-  ===== Proof
+  ==== Proof
   Let $N_1$ recognize $A_1$ , and $N_2$ recognize $A_2$ we can construct $N$ such that it can recognize  $A_1 union A_2$ as follows:
   1. $N.Q = {q_0} union N_1.Q union N_2.Q$ 
   2. $N.Sigma = N_1.Sigma union N_2.Sigma$ 
@@ -199,11 +160,13 @@
 ]
 
 #theorem_block()[
-  ==== Theorem Closure under concatenation using NFA
+  === Theorem Closure under concatenation using NFA
   $A$ and $B$ are regular languages then $A circle.tiny B$ is a regular language
 ]
 
 #proof_block()[
+  ==== Proof
+  
   Let $N_1$ recognize $A_1$ , and $N_2$ recognize $A_2$ we can construct $N$ such that it can recognize  $A_1 circle.tiny A_2$ as follows:
 
   1. $N.Q = N_1.Q union N_2.Q$
@@ -218,11 +181,13 @@
 
 
 #theorem_block()[
-  ==== Theorem Closure under star using NFA
+  === Theorem Closure under star using NFA
   $A$ is a regular language then $A^star$ is a regular language
 ]
 
 #proof_block()[
+  ==== Proof
+  
   Let $N_1$ recognize $A$, we can construct $N$ such that it can recognize $A^star$ as follows:
   1. $N.Q = {N.q_0} union N_1.Q$
   2. $N.Sigma = N_1.Sigma$
@@ -246,4 +211,83 @@
   5. $R_1 circle.tiny R_2$
   6. $R_1^star$
   where $R_1,R_2$ are regular expressions 
+]
+
+
+#theorem_block()[
+  === Theorem: regular language $arrow.double$ regular expression
+
+  a language is regular iff some regular expression describes it
+]
+
+#theorem_block()[
+  ==== Lemma: regular expression $arrow.double$ regular language
+]
+
+#proof_block()[
+  ===== Proof
+  in order to prove this lets consider the 6 cases for describing $R$ and make a NFA for each 
+
+  1. $R = a "for" a in Sigma$ so $L(R) = {a}$ for this we have the following NFA $N = ({q_0,q_1},Sigma,delta,q_0,{q_1})$ where $delta(q_0,a) = {q_1}$ else $emptyset$
+    
+  2. $R = epsilon$ so $L(R) = {epsilon}$ for this we have the following NFA $N = ({q_0},Sigma,delta,q_0,{q_0})$ where $delta(\_,\_) = emptyset$
+    
+  3. $R = emptyset$ so $L(R) = emptyset$ for this we have the following NFA $N = ({q_0},Sigma,delta,q_0,emptyset)$ where $delta(\_,\_) = emptyset$
+  
+  4. $R = R_1 union R_2$ so $L(R) = L(R_1) union L(R_2)$ we have $N_1, N_2$ for $L(R_1), L(R_2)$ so we can build $N$ for their union
+  
+  5. $R = R_1 circle.tiny R_2$ so $L(R) = L(R_1) union L(R_2)$ we have $N_1, N_2$ for $L(R_1), L(R_2)$ so we can build $N$ for their concatenation
+  
+  6. $R = R_1^star$ so $L(R) = L(R_1)^star$ we have $N_1$ for $L(R_1)^star$ so we can build $N$ for its star operation
+  
+]
+
+#theorem_block()[
+  ==== Lemma: regular language $arrow.double$ regular expression
+]
+
+before making the proof we need to define a new automat a generalized nondeterministic finite automaton GNFA which to make an equivalence between regular languages and GNFA then using showing the equivalence between GNFA and regular expression
+
+#definition_block()[
+  ===== GNFA 
+  A generalized nondeterministic finite automaton is a 5-tuple $(Q,Sigma,delta,q_"start",q_"accept")$, where:
+  1. $Q$ is a finite set of state
+  2. $Sigma$ is the input alphabet
+  3. $delta: (Q - {q_"accept"}) times (Q - {q_"start"}) arrow.long R$ is the transition function
+    - $R$ is the set for regular expressions over the set of alphabet $Sigma$
+  4. $q_"start" $ is the starting state
+  5. $q_"accept"$ is the accepting state
+]
+
+#definition_block()[
+  ===== my definition of GNFA 
+  A generalized nondeterministic finite automaton is a 7-tuple $(Q,Sigma,R,theta,delta,q_"start",q_"accept")$, where:
+  + $Q$ is a finite set of state
+  + $Sigma$ is the input alphabet
+  + $R$ is a set of regular expressions over $Sigma$
+  + $theta: (Q - {q_"accept"}) times (Q - {q_"start"}) arrow.long R$ is the assignment function
+  + $delta: Q times R arrow.long Q$ is the transition function where: $delta(q_i,r_i) = {q_j|r_i = theta(q_i,q_j)}$
+  + $q_"start" $ is the starting state
+  + $q_"accept"$ is the accepting state
+]
+
+
+
+#proof_block()[
+  ===== Proof: DFA $arrow.double$ GNFA
+
+  we have a DFA $M$ that recognizes language $L$ we can construct a GNFA $G$ that recognizes the language $L$ as follows: $G = ({q_"start",q_"accept"},M.Sigma,R,theta,delta,q_"start",q_"accept")$ where 
+
+  + $R = {w | w in L}$
+  + $theta(q_"start",q_"accept") = R$
+  + $delta(q_"start",r) = q_"accept"$
+]
+
+#proof_block()[
+  ===== Proof of theorem
+  DFA can be converted into GNFA which can be converted into regular expressions
+]
+
+#proof_block()[
+  === Proof: from the previous 2 lemmas
 ]
