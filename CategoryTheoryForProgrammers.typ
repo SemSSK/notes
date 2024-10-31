@@ -1,3 +1,6 @@
+#import "lib.typ": *
+#import "@preview/commute:0.2.0": node, arr, commutative-diagram
+ 
 #set page(
   margin: 1cm
 )
@@ -10,144 +13,48 @@
   numbering: "1."
 )
 
-= Part One
-
-== Simple Algebraic Data Types
-
-*Challeges:* \
-
-+ Showing isomorphism between (Maybe a) and (Either () a):
-```hs
-maybeToEither :: Maybe a -> Either () a
-maybeToEither Nothing = Left ()
-maybeToEither (Some v) = Right v
-
-eitherToMaybe :: Either () a -> Maybe a
-eitherToMaybe (Left ()) = Nothing
-eitherToMaybe (Right v) = Some v
-``` 
-+ Showing that $a + a = 2 times a$ \
-i show that by isomorphism between (Either a a) and (Bool,a)
-gg
-```hs
-f :: Either a a -> (Bool, a)
-f (Right a) = (True, a)
-f (Left a) = (False, a)
-
-g :: (Bool, a) -> Either a a
-g (True, a) = Right a
-g (False, a) = Left a
-``` 
-
-== Functors
-
-*Functor laws* :
-- preserves identity : $F i d " " a= i d_(F a) F a$
-- preserves composition: $F (g circle.tiny f) = F g circle.tiny F f$
-
-
-*Challenges:* \
-2. proving functor laws on reader functor
-```hs
-f :: a -> b
-g :: b -> c
-
-fmap (g . f) reader = (g . f) . reader
-
-fmap g (fmap f reader) = fmap g (f . reader) = g . (f . reader)
-
--- by assosiativity of compostion it works 
-```
-
-4. proving functor law for lists
-
-```hs
--- Identity preservation
-
-id [] = []
-id (x:xs) = x : id xs
-
-fmap id [] = []
-fmap id (x:xs) = (id x) : fmap id xs
-
--- composition preservation
-
-fmap (g . f) [] = []
-fmap (g . f) (x:xs) = (g.f) x : fmap (g . f) xs
-
-fmap g (fmap f []) = fmap g [] = []
-fmap g (fmap f (x:xs)) = fmap g (f x : fmap f xs)
-                       = g (f x) : fmap g (fmap f xs)
-                       = (g . f) x : fmap (g . f) xs
-```
-
-== Functoriality 
-
-*Challenges:* \
-
-1.
-
-2. showing that Maybe is isomorphic to :
-
-```hs
-  type Maybe' a = Either (Const () a) (Identity a)
-
-  --- First ->
-  f :: Maybe a -> Maybe' a
-  f Nothing = Left (Const ())
-  f (Just a) = Right (Identity a)
-
-  --- Second <-
-  g :: Maybe' a -> Maybe a
-  g (Left _) = Nothing
-  g (Right (Identity a)) = Just a
-
-  --- Showing they are inverse of each other 
-
-  ---- first f . g
-  f . g (Left (Const ())) = f Nothing 
-                          = Nothing
-  f . g (Right (Identity a)) = f (Just a)
-                             = Right (Identity a)
-
-  f . g = id
-
-  ---- second g . f
-  g . f Nothing = g (Left (Const ()))
-                = Nothing
-  g . f (Just a) = g (Right (Identity a))
-                 = Just a
-  g . f = id
-
-  ---- Qed
-
-  
-``` 
-3.
-4.
-5. Definition of bifunctors in a language other than haskell here i will use rust
-
-```rs
-trait Bifunctor {
-  type A;
-  type B;
-
-  fn bimap(f:F,s:S) -> B {
-    compose(first(f),second(s))
-  }
-
-  fn first(f:F) -> B {
-    bimap(f,id)
-  }
-
-  fn second(s:S) -> B {
-    bimap(id,s)
-  }
+#show outline.entry.where(
+  level: 1
+): it => {
+  v(12pt, weak:true)
+  strong(it)
 }
-```
-6.
 
-== Function Types
+#let compose = $circle.tiny$
 
 
-*Challenges* \
+#outline()
+
+= Category theory basics 
+#definition_block()[
+  == Definition
+  a Category is a collection of arrows called *morphisms* and dots called *objects* with these conditions:
+  1. $f: A arrow B and g: B arrow C$ then there exist $g circle.tiny f: A arrow C$ called the composition of $f$ with $g$
+    - composition is *associative*
+  2. forall object A in a category there is a morphism $"id":A arrow.long A$ such that $ "id"_B compose f = f$ and $g compose "id"_A = g$ its the identity morphism 
+]
+
+== Examples
+
+1. *the empty category:* no objects and no morphisms
+2. a one object category with only identity morphisms
+3. multiple objects only identity morphisms
+4. *Set:* sets as objects and functions as morphisms 
+5. *Vect:* vector spaces as objects and linear maps as morphisms
+6. *Hask:* haskell types as objects and fuctions as morphisms
+
+#definition_block()[
+  == Definition
+  a morphism $f:A arrow B$ is an isomorphism if there exists $g:B arrow A$ such that $f compose g = "id"_B and g compose f = "id"_A$
+]
+
+#definition_block()[
+  == Definition
+  an object $O$ in a category $C$ is terminal iff $forall A in C, exists!f:A arrow O$
+]
+
+== Examples
+1. the set with 1 element in *Set*
+2. the Unit type in *Hask*
+
+

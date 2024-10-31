@@ -17,7 +17,9 @@
             typst
             typst-lsp
             typst-preview
-
+            nodePackages.vscode-html-languageserver-bin
+            nodePackages.typescript-language-server
+            html-tidy
           ];
         };
       };

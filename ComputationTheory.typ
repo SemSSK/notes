@@ -1,5 +1,7 @@
 #import "lib.typ": *
 
+
+
 #set page(
   margin: 1cm
 )
@@ -11,6 +13,14 @@
 #set heading(
   numbering: "1."
 )
+#show outline.entry.where(
+  level: 1
+): it => {
+  v(12pt, weak:true) 
+  strong(it)
+}
+
+#outline()
 
 = Automata and Language
 
@@ -72,7 +82,7 @@
 
 
 #theorem_block()[
-  ==== Theorem colosedness under concatenation
+  ==== Theorem closure under concatenation
   $A$ and $B$ are regular languages then $A circle.tiny B$ is a regular languages
 ]
 
@@ -290,4 +300,10 @@ before making the proof we need to define a new automat a generalized nondetermi
 
 #proof_block()[
   === Proof: from the previous 2 lemmas
+]
+
+#theorem_block()[
+  == The Pumping Lemma
+
+  
 ]

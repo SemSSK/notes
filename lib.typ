@@ -10,15 +10,15 @@
 }
 
 #let definition_block(body) = {
-  important_block([#body],blue,white)
+  important_block([#body],aqua,black)
 } 
 
 #let theorem_block(body) = {
-  important_block([#body],red,white)
+  important_block([#body],rgb("#d3f0a8"),black)
 }
 
 #let proof_block(body) = {
-  important_block([#body],green,black)
+  important_block([#body],rgb("#f1807e"),black)
 }
 
 #let incomplete_proof_block(body) = {
