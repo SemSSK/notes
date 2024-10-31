@@ -11,7 +11,7 @@ const filesnames = [
 ]
 
 
-let body_content = files.map(f => `<li>
+let body_content = filesnames.map(f => `<li>
     <a href="./${f}.pdf">${f}</a>
   </li>`)
      .join("")
