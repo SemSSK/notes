@@ -5,16 +5,14 @@ const filesnames = [
   "CategoryTheoryForProgrammers",
   "colorExplanation",
   "ComputationTheory",
-  "lib",
   "ModelTheory",
   "TypesAndProgrammingLanguages",
 ]
 
 
 let body_content = filesnames.map(f => `<li>
-    <a href="./${f}.pdf">${f}</a>
+    <a href="./${f}.pdf">${f.replace(/([A-Z])/g, ' $1').trim()}</a>
   </li>`)
      .join("")
 
- 
 body.innerHTML = body_content
